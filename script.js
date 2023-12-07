@@ -26,7 +26,7 @@ fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
     const xScale = d3.scaleLinear();
 
     yScale.domain([d3.min(gdp), d3.max(gdp)])
-    yScale.range([700 - padding, padding]);
+    yScale.range([700-padding, padding]);
 
     xScale.domain([d3.min(years), d3.max(years)]);
     xScale.range([padding, 1000 - padding]);
@@ -43,5 +43,30 @@ fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
     svg.append("g")
         .attr("transform", "translate(0, 650)")
         .attr("id", "x-axis")
-        .call(xAxis);    
+        .call(xAxis);
+        
+    //Reverse y scale for graphing
+    yScale.range([padding, 700 - padding]);
+
+    //Spit bars
+    svg.selectAll("rect")
+        .data(gdp)
+        .enter()
+        .append("rect")
+        .attr("x", (d, i) => padding + i * (900.0 / gdp.length))
+        .attr("y", (d) => 650 - yScale(d))
+        .attr("width", (900.0 / gdp.length))
+        .attr("height", (d) => yScale(d))
+        .attr("fill", "navy")
+        .attr("class", "bar")
+        .attr("data-date", (d, i) => dates[i])
+        .attr("data-gdp", (d) => d)
+
+    //Add tooltip   
+    svg.selectAll("rect")
+        .data(gdp)
+        .enter()
+        .append("title")
+        .text((d) => d)
+
 });
